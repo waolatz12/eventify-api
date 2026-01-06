@@ -1,0 +1,2 @@
+# eventify-api
+Eventify API
