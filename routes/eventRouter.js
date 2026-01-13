@@ -10,4 +10,11 @@ router
   .post(eventController.createEvent)
   .get(eventController.getAllEvents);
 
+// Route to update an existing event
+router
+  .route('/:id')
+  .patch(eventController.updateEvent)
+  .get(eventController.getEventById)
+  .delete(eventController.deleteEvent);
+
 module.exports = router;

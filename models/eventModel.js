@@ -55,5 +55,5 @@ const eventSchema = new mongoose.Schema(
     timestamps: true, // adds createdAt and updatedAt automatically
   },
 );
-
+//compiling the schema into a model andd export it
 module.exports = mongoose.model('Event', eventSchema);
