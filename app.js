@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const eventRouter = require('./routes/eventRouter');
+const ticketRouter = require('./routes/ticketRouter');
 
 const app = express();
 app.set('query parser', 'extended'); // Use extended query string parsing
@@ -33,5 +34,6 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/v1/events', eventRouter);
+app.use('/api/v1/tickets', ticketRouter);
 
 module.exports = app;

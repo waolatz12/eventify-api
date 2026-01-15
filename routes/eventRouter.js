@@ -4,6 +4,10 @@ const eventController = require('../controllers/eventController');
 
 const router = express.Router();
 
+// Route to get Top 5 Events
+router
+  .route('/top-5-events')
+  .get(eventController.aliasTopEvents, eventController.getAllEvents);
 // Route to create a new event
 router
   .route('/')
