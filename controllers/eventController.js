@@ -128,6 +128,42 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
+//get events stats
+exports.getEventStats = async (req, res) => {
+  try {
+    const stats = await Event.aggregate([
+      {
+        //events with capacity greater than or equal to 1000
+        $match: { capacity: { $gte: 1000 } },
+      },
+      {
+        //grouping by status
+        $group: {
+          _id: '$status',
+          numEvents: { $sum: 1 },
+          avgCapacity: { $avg: '$capacity' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      //sorting by avgPrice ascending
+      { $sort: { avgPrice: 1 } },
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
 // get event by id
 exports.getEventById = async (req, res) => {
   try {

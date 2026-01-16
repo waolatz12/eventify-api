@@ -8,6 +8,9 @@ const router = express.Router();
 router
   .route('/top-5-events')
   .get(eventController.aliasTopEvents, eventController.getAllEvents);
+
+// Route to get event statistics
+router.route('/event-stats').get(eventController.getEventStats);
 // Route to create a new event
 router
   .route('/')
