@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const eventRouter = require('./routes/eventRouter');
 const ticketRouter = require('./routes/ticketRouter');
 
@@ -35,5 +36,21 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/tickets', ticketRouter);
+// Handle undefined Routes
+
+app.use((req, res, next) => {
+  // res.status(404).json({
+  //   status: 'fail',
+  //   message: `Can't find ${req.originalUrl} on this server!`,
+  // });
+  //using the built-in error handling mechanism of express
+  // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
+  // err.statusCode = 404;
+  // err.status = 'fail';
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404)); //anything passed to next() is considered an error and will skip all other middlewares and go to the global error handling middleware
+});
+
+// Global Error Handling Middleware
+app.use(globalErrorHandler);
 
 module.exports = app;

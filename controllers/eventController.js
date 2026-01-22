@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Event = require('../models/eventModel');
 const APIFeatures = require('../utils/apiFeatures');
 
@@ -167,6 +168,12 @@ exports.getEventStats = async (req, res) => {
 // get event by id
 exports.getEventById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid event ID format',
+      });
+    }
     const eventById = await Event.findById(req.params.id);
     res.status(200).json({
       status: 'success',
@@ -174,6 +181,12 @@ exports.getEventById = async (req, res) => {
         event: eventById,
       },
     });
+    if (!eventById) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No event found with that ID',
+      });
+    }
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -185,11 +198,25 @@ exports.getEventById = async (req, res) => {
 // Delete an event
 exports.deleteEvent = async (req, res) => {
   try {
-    await Event.findByIdAndDelete(req.params.id);
+    //check for valid mongoose id
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid event ID format',
+      });
+    }
+    const event = await Event.findByIdAndDelete(req.params.id);
     res.status(204).json({
       status: 'success',
       data: null,
     });
+
+    if (!event) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No event found with that ID',
+      });
+    }
   } catch (err) {
     res.status(400).json({
       status: 'fail',
