@@ -4,6 +4,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const eventRouter = require('./routes/eventRouter');
 const ticketRouter = require('./routes/ticketRouter');
+const userRouter = require('./routes/userRouter');
 
 const app = express();
 app.set('query parser', 'extended'); // Use extended query string parsing
@@ -14,10 +15,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+//converts the body of the request to json and makes it available in req.body
 app.use(express.json());
+//converts the body of the request to urlencoded data and makes it available in req.body
 app.use(express.urlencoded({ extended: true }));
+// add a timestamp to the request object for logging purposes and to track when the request was made
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString(); //current time property e.g., 2023-10-05T14:48:00.000Z
+  // console.log(req.headers);
   next();
 });
 app.use((req, res, next) => {
@@ -36,6 +41,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/tickets', ticketRouter);
+app.use('/api/v1/users', userRouter);
 // Handle undefined Routes
 
 app.use((req, res, next) => {
