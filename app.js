@@ -5,6 +5,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const eventRouter = require('./routes/eventRouter');
 const ticketRouter = require('./routes/ticketRouter');
 const userRouter = require('./routes/userRouter');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.set('query parser', 'extended'); // Use extended query string parsing
@@ -14,7 +15,14 @@ app.set('query parser', 'extended'); // Use extended query string parsing
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
+// Global Middleware
+// Limit requests from the same API
+const limiter = rateLimit({
+  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+app.use('/api', limiter); // Apply rate limiting to all API routes
 //converts the body of the request to json and makes it available in req.body
 app.use(express.json());
 //converts the body of the request to urlencoded data and makes it available in req.body

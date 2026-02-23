@@ -29,6 +29,10 @@ router
   .route('/:id')
   .patch(authController.protect, eventController.updateEvent)
   .get(eventController.getEventById)
-  .delete(authController.protect, eventController.deleteEvent);
+  .delete(
+    authController.protect, 
+    authController.restrictTo('admin'), // Only admin can delete events
+    eventController.deleteEvent
+  );
 
 module.exports = router;
